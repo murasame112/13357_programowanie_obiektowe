@@ -24,9 +24,20 @@ namespace _13357_programowanie_obiektowe
 {
     // https://powietrze.gios.gov.pl/pjp/content/api
 
+    /* PLAN:
+     * 1 - program wyświetla pierwszy interfejs, w którym można wybrać "wyświetl wybrane stacje"
+     * 2 - program pobiera (z bazy lub api, punkt 4) i wyświetla kilka wybranych stacji (w formie przycisków, lub przycisk obok)
+     * 3 - po kliknięciu na daną stację, program pokazuje stan powietrza (lub poszczególnego jego składnika) w tym miejscu  
+     * 4 - zapisywanie do bazy albo tuż po pobraniu danych i wtedy wyświetla wszystko na podstawie danych z bazy (można będzie dodać przycisk "aktualizuj"),
+     * albo dopiero gdy użytkownik zdecyduje się na zapisanie do niej konkretnych danych
+     */
+
+
+
     // TODO:
-    // 1. Zdecydować konkretnie które z danych chcę przedstawiać i zapisywać do bazy
-    // 2. Zdecydować w jaki sposób będzie można operować na danych
+    // 3. 
+
+    // 
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
