@@ -25,11 +25,12 @@ namespace _13357_programowanie_obiektowe
     // https://powietrze.gios.gov.pl/pjp/content/api
 
     /* PLAN:
-     * 1 - program wyświetla wybrane stacje lub uzytkownik je zna
-     * 2 - uzytkownik podaje id stacji (jest obok nazwy jesli wyswietlone wybrane, lub po prostu je zna bo jest pracownikiem)
-     * 3 - to wyswietla mu id rzeczy ktore stacja mierzy (na podstawie stanowiska pomiarowego)
+     * 1 - program wyświetla wybrane stacje
+     * 2 - uzytkownik podaje id stacji (jest obok nazwy)
+     * 3 - program wyswietla mu id rzeczy ktore stacja mierzy (na podstawie stanowiska pomiarowego)
      * 4 - uzytkownik podaje id stanowiska i sprawdza stan poszczegolnego skladnika powietrza (dane pomiarowe)
      * 5 - zapisywanie do bazy albo tuż po pobraniu danych i wtedy wyświetla wszystko na podstawie danych z bazy
+     * 6 - na koniec może poszukać skali i np przeliczać, że np. wartość ozonu 77.1506 to Dobra, Bardzo Dobra, Zła, czy coś takiego?
      */
 
 
