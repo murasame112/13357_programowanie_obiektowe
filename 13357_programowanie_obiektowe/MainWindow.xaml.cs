@@ -48,7 +48,7 @@ namespace _13357_programowanie_obiektowe
     {
         public record ModelSensor
         {
-            public int Id { get; set; }
+            public int SensorId { get; set; }
             public int ParamId { get; set; }
             public int StationId { get; set; }
             public string ParamName { get; set; }
@@ -63,11 +63,11 @@ namespace _13357_programowanie_obiektowe
             [JsonPropertyName("stationId")]
             public int StationId { get; set; }
             [JsonPropertyName("param")]
-            public List<JsonParam> Params { get; set; }
+            public JsonParam Param { get; set; }
         }
 
         record Param(string Name, string Formula, string Code, int IdParam);
-        int[] stationIds = new int[] { 659, 459, 736, 10121, 9179};
+        int[] stationIds = new int[5] { 659, 459, 736, 10121, 9179};
 
 
         record JsonParam
@@ -89,14 +89,28 @@ namespace _13357_programowanie_obiektowe
 
             WebClient client = new WebClient();
             client.Headers.Add("Accept", "application/json");
-
+            List<TableParams> tableParams = new List<TableParams>();
+            int index = 0;
             for (int i = 0; i < stationIds.Length; i++)
             {
+                
+                tableParams.Clear();
                 string adress = "https://api.gios.gov.pl/pjp-api/rest/station/sensors/" + stationIds[i] + "";
                 string json = client.DownloadString(adress);
-                List<TableParams> tableParams = JsonSerializer.Deserialize<List<TableParams>>(json);
-                ModelSensor sensor = new ModelSensor() { Id = i, ParamId = tableParams[i].Id, StationId = stationIds[i], ParamName = tableParams[i].Params[i].Name, ParamFormula = tableParams[i].Params[i].Formula };
-                context.Sensors.Add(sensor);
+                tableParams = JsonSerializer.Deserialize<List<TableParams>>(json);
+
+                foreach(TableParams item in tableParams)
+                {
+                    index++;
+                    int localParamId = item.Id;
+                    string localParamName = item.Param.Name;
+                    string localParamFormula = item.Param.Formula;
+
+                    ModelSensor sensor = new ModelSensor() { SensorId = index, ParamId = localParamId, StationId = stationIds[i], ParamName = localParamName, ParamFormula = localParamFormula };
+                    context.Sensors.Add(sensor);
+                }
+
+                
             }
             context.SaveChanges();
         }
@@ -113,7 +127,9 @@ namespace _13357_programowanie_obiektowe
 
             protected override void OnModelCreating(ModelBuilder modelBuilder)
             {
-
+                modelBuilder.Entity<ModelSensor>()
+                .ToTable("Sensors")
+                .HasKey(s => s.SensorId);
             }
         }
 
