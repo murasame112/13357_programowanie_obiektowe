@@ -35,18 +35,53 @@ namespace _13357_programowanie_obiektowe
 
 
     // TODO:
-    // 3. 
+    // 4. przetworzenie ich i dodawanie do bazy
 
-    // 
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
+        class TableParams
+        {
+            [JsonPropertyName("id")]
+            public int Id { get; set; }
+            [JsonPropertyName("stationId")]
+            public int StationId { get; set; }
+            [JsonPropertyName("param")]
+            public List<JsonParam> Params { get; set; }
+        }
+
+        record Param(string Name, string Formula, string Code, int IdParam);
+
+        record JsonParam
+        {
+
+            [JsonPropertyName("paramName")]
+            public string Name { get; set; }
+            [JsonPropertyName("paramFormula")]
+            public string Formula { get; set; }
+            [JsonPropertyName("paramCode")]
+            public string Code { get; set; }
+            [JsonPropertyName("idParam")]
+            public int IdParam { get; set; }
+        }
+
+        Dictionary<string, Param> Params = new Dictionary<string, Param>();
+        private void DownloadDataJson()
+        {
+            WebClient client = new WebClient();
+            client.Headers.Add("Accept", "application/json");
+            string json = client.DownloadString("https://api.gios.gov.pl/pjp-api/rest/station/sensors/659");
+            List<TableParams> tableParams = JsonSerializer.Deserialize<List<TableParams>>(json);
+        }
+
+
         public MainWindow()
         {
             InitializeComponent();
+            DownloadDataJson();
         }
     }
 }
