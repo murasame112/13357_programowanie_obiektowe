@@ -25,11 +25,11 @@ namespace _13357_programowanie_obiektowe
     // https://powietrze.gios.gov.pl/pjp/content/api
 
     /* PLAN:
-     * 1 - program wyświetla pierwszy interfejs, w którym można wybrać "wyświetl wybrane stacje"
-     * 2 - program pobiera (z bazy lub api, punkt 4) i wyświetla kilka wybranych stacji (w formie przycisków, lub przycisk obok)
-     * 3 - po kliknięciu na daną stację, program pokazuje stan powietrza (lub poszczególnego jego składnika) w tym miejscu  
-     * 4 - zapisywanie do bazy albo tuż po pobraniu danych i wtedy wyświetla wszystko na podstawie danych z bazy (można będzie dodać przycisk "aktualizuj"),
-     * albo dopiero gdy użytkownik zdecyduje się na zapisanie do niej konkretnych danych
+     * 1 - program wyświetla wybrane stacje lub uzytkownik je zna
+     * 2 - uzytkownik podaje id stacji (jest obok nazwy jesli wyswietlone wybrane, lub po prostu je zna bo jest pracownikiem)
+     * 3 - to wyswietla mu id rzeczy ktore stacja mierzy (na podstawie stanowiska pomiarowego)
+     * 4 - uzytkownik podaje id stanowiska i sprawdza stan poszczegolnego skladnika powietrza (dane pomiarowe)
+     * 5 - zapisywanie do bazy albo tuż po pobraniu danych i wtedy wyświetla wszystko na podstawie danych z bazy
      */
 
 
