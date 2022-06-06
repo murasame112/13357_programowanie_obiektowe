@@ -20,6 +20,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Sqlite;
 
 namespace _13357_programowanie_obiektowe
 {
@@ -37,8 +38,7 @@ namespace _13357_programowanie_obiektowe
 
 
     // TODO:
-    // 4. przetworzenie danych
-    // 5. dodawanie do bazy
+    // 6.
 
 
     /// <summary>
@@ -56,10 +56,6 @@ namespace _13357_programowanie_obiektowe
 
         }
 
-        class TableStations
-        {
-            public List<TableParams> tableParameters { get; set; }
-        }
         class TableParams
         {
             [JsonPropertyName("id")]
@@ -88,35 +84,21 @@ namespace _13357_programowanie_obiektowe
         }
 
         Dictionary<string, Param> Params = new Dictionary<string, Param>();
-        private void DownloadDataJson()
+        private void DownloadDataJson(AppContext context)
         {
 
             WebClient client = new WebClient();
             client.Headers.Add("Accept", "application/json");
 
-            List<TableStations> tableStations = new List<TableStations>();
             for (int i = 0; i < stationIds.Length; i++)
             {
                 string adress = "https://api.gios.gov.pl/pjp-api/rest/station/sensors/" + stationIds[i] + "";
                 string json = client.DownloadString(adress);
                 List<TableParams> tableParams = JsonSerializer.Deserialize<List<TableParams>>(json);
-                TableStations tableStation = new TableStations();
-                tableStation.tableParameters = tableParams;
-                tableStations.Add(tableStation);
-
-                /*
-                modelBuilder.Entity<>()
-                    .ToTable("books")
-                    .HasData(
-                    new Book() { Id = 1, AuthorId = 1, EditionYear = 2020, Title = "C#" },
-                    new Book() { Id = 2, AuthorId = 1, EditionYear = 2021, Title = "Asp.Net" },
-                    new Book() { Id = 3, AuthorId = 2, EditionYear = 2019, Title = "Data structures" },
-                    new Book() { Id = 4, AuthorId = 2, EditionYear = 2018, Title = "Web applications" }
-                    ); 
-                
-                 */
-
+                ModelSensor sensor = new ModelSensor() { Id = i, ParamId = tableParams[i].Id, StationId = stationIds[i], ParamName = tableParams[i].Params[i].Name, ParamFormula = tableParams[i].Params[i].Formula };
+                context.Sensors.Add(sensor);
             }
+            context.SaveChanges();
         }
 
         class AppContext : DbContext
@@ -126,7 +108,7 @@ namespace _13357_programowanie_obiektowe
             {
                 //   d:\\database\\base.db
                 // DATASOURCE=D:/Users/tomasz.wiesek/database/base.db
-                optionsBuilder.UseSqlite("DATASOURCE=C:/Users/tomas/Desktop/studia/4 semestr/programowanie obiektowe/laby");
+                optionsBuilder.UseSqlite("DATASOURCE=C:/Users/tomas/Desktop/studia/4 semestr/programowanie obiektowe/laby/base.db");
             }
 
             protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -141,7 +123,7 @@ namespace _13357_programowanie_obiektowe
             AppContext context = new AppContext();
             context.Database.EnsureCreated();
             InitializeComponent();
-            DownloadDataJson();
+            DownloadDataJson(context);
         }
     }
 }
