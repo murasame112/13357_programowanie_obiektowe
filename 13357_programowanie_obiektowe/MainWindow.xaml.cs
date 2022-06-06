@@ -38,7 +38,7 @@ namespace _13357_programowanie_obiektowe
 
 
     // TODO:
-    // 6.
+    // 6. usunac dictionary param, bo chyba niepotrzebne skoro korzystam z bazy
 
 
     /// <summary>
@@ -53,7 +53,13 @@ namespace _13357_programowanie_obiektowe
             public int StationId { get; set; }
             public string ParamName { get; set; }
             public string ParamFormula { get; set; }
+        }
 
+        public record ModelDetail
+        {
+            public int DetailId { get; set; }
+            public int SensorId { get; set; }
+            public decimal Value { get; set; }
         }
 
         class TableParams
@@ -66,7 +72,6 @@ namespace _13357_programowanie_obiektowe
             public JsonParam Param { get; set; }
         }
 
-        record Param(string Name, string Formula, string Code, int IdParam);
         int[] stationIds = new int[5] { 659, 459, 736, 10121, 9179};
 
 
@@ -83,41 +88,72 @@ namespace _13357_programowanie_obiektowe
             public int IdParam { get; set; }
         }
 
-        Dictionary<string, Param> Params = new Dictionary<string, Param>();
+        class TableDetails
+        {
+            [JsonPropertyName("key")]
+            public string Key { get; set; }
+            [JsonPropertyName("values")]
+            public JsonValue Values { get; set; }
+            [JsonPropertyName("param")]
+            public JsonParam Param { get; set; }
+        }
+
+        class JsonValue
+        {
+            [JsonPropertyName("date")]
+            public string Date { get; set; }
+            [JsonPropertyName("value")]
+            public decimal Value { get; set; }
+        }
+
         private void DownloadDataJson(AppContext context)
         {
 
             WebClient client = new WebClient();
             client.Headers.Add("Accept", "application/json");
             List<TableParams> tableParams = new List<TableParams>();
+            List < TableDetails> tableDetails = new List<TableDetails>();
             int index = 0;
+            int indexDetail = 0;
             for (int i = 0; i < stationIds.Length; i++)
             {
-                
+
                 tableParams.Clear();
                 string adress = "https://api.gios.gov.pl/pjp-api/rest/station/sensors/" + stationIds[i] + "";
                 string json = client.DownloadString(adress);
                 tableParams = JsonSerializer.Deserialize<List<TableParams>>(json);
 
-                foreach(TableParams item in tableParams)
+                foreach (TableParams item in tableParams)
                 {
                     index++;
+                    indexDetail++;
                     int localParamId = item.Id;
                     string localParamName = item.Param.Name;
                     string localParamFormula = item.Param.Formula;
 
                     ModelSensor sensor = new ModelSensor() { SensorId = index, ParamId = localParamId, StationId = stationIds[i], ParamName = localParamName, ParamFormula = localParamFormula };
                     context.Sensors.Add(sensor);
-                }
 
-                
+
+                    string detailAdress = "https://api.gios.gov.pl/pjp-api/rest/data/getData/" + localParamId + "";
+                    string detailJson = client.DownloadString(detailAdress);
+                    tableDetails = JsonSerializer.Deserialize<List<TableDetails>>(json);
+
+                    ModelDetail detail = new ModelDetail() { DetailId = indexDetail, SensorId = localParamId, Value = tableDetails[0].Values.Value };
+                    context.Details.Add(detail);
+                    tableDetails.Clear();
+
+                }
             }
+
+
             context.SaveChanges();
         }
 
         class AppContext : DbContext
         {
             public DbSet<ModelSensor> Sensors { get; set; }
+            public DbSet<ModelDetail> Details { get; set; }
             protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             {
                 //   d:\\database\\base.db
@@ -130,6 +166,10 @@ namespace _13357_programowanie_obiektowe
                 modelBuilder.Entity<ModelSensor>()
                 .ToTable("Sensors")
                 .HasKey(s => s.SensorId);
+
+                modelBuilder.Entity<ModelDetail>()
+                .ToTable("Details")
+                .HasKey(d => d.DetailId);
             }
         }
 
