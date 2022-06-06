@@ -30,15 +30,18 @@ namespace _13357_programowanie_obiektowe
      * 1 - program wyświetla wybrane stacje
      * 2 - uzytkownik podaje id stacji (jest obok nazwy)
      * 3 - program wyswietla mu id rzeczy ktore stacja mierzy (na podstawie stanowiska pomiarowego)
-     * 4 - uzytkownik podaje id stanowiska i sprawdza stan poszczegolnego skladnika powietrza (dane pomiarowe)
-     * 5 - zapisywanie do bazy albo tuż po pobraniu danych i wtedy wyświetla wszystko na podstawie danych z bazy
-     * 6 - na koniec może poszukać skali i np przeliczać, że np. wartość ozonu 77.1506 to Dobra, Bardzo Dobra, Zła, czy coś takiego?
+     * 4 - uzytkownik podaje id sensora
+     * 5 - program wyswietla stan poszczegolnego skladnika powietrza (dane pomiarowe)
+     * ++++6 - zapisywanie do bazy albo tuż po pobraniu danych i wtedy wyświetla wszystko na podstawie danych z bazy
+     * 7 - na koniec może poszukać skali i np przeliczać, że np. wartość ozonu 77.1506 to Dobra, Bardzo Dobra, Zła, czy coś takiego?
      */
 
 
 
     // TODO:
-    // 6. usunac dictionary param, bo chyba niepotrzebne skoro korzystam z bazy
+    // 7. interfejs uzytkownika
+    // 8. wysylanie zapytan do bazy i otrzymywanie odpowiedzi
+    // 9. wyswietlanie odpowiedzi
 
 
     /// <summary>
