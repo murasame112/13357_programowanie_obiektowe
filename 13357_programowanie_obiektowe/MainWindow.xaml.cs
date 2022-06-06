@@ -19,6 +19,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace _13357_programowanie_obiektowe
 {
@@ -45,6 +46,16 @@ namespace _13357_programowanie_obiektowe
     /// </summary>
     public partial class MainWindow : Window
     {
+        public record ModelSensor
+        {
+            public int Id { get; set; }
+            public int ParamId { get; set; }
+            public int StationId { get; set; }
+            public string ParamName { get; set; }
+            public string ParamFormula { get; set; }
+
+        }
+
         class TableStations
         {
             public List<TableParams> tableParameters { get; set; }
@@ -79,6 +90,7 @@ namespace _13357_programowanie_obiektowe
         Dictionary<string, Param> Params = new Dictionary<string, Param>();
         private void DownloadDataJson()
         {
+
             WebClient client = new WebClient();
             client.Headers.Add("Accept", "application/json");
 
@@ -91,12 +103,43 @@ namespace _13357_programowanie_obiektowe
                 TableStations tableStation = new TableStations();
                 tableStation.tableParameters = tableParams;
                 tableStations.Add(tableStation);
+
+                /*
+                modelBuilder.Entity<>()
+                    .ToTable("books")
+                    .HasData(
+                    new Book() { Id = 1, AuthorId = 1, EditionYear = 2020, Title = "C#" },
+                    new Book() { Id = 2, AuthorId = 1, EditionYear = 2021, Title = "Asp.Net" },
+                    new Book() { Id = 3, AuthorId = 2, EditionYear = 2019, Title = "Data structures" },
+                    new Book() { Id = 4, AuthorId = 2, EditionYear = 2018, Title = "Web applications" }
+                    ); 
+                
+                 */
+
+            }
+        }
+
+        class AppContext : DbContext
+        {
+            public DbSet<ModelSensor> Sensors { get; set; }
+            protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            {
+                //   d:\\database\\base.db
+                // DATASOURCE=D:/Users/tomasz.wiesek/database/base.db
+                optionsBuilder.UseSqlite("DATASOURCE=C:/Users/tomas/Desktop/studia/4 semestr/programowanie obiektowe/laby");
+            }
+
+            protected override void OnModelCreating(ModelBuilder modelBuilder)
+            {
+
             }
         }
 
 
         public MainWindow()
         {
+            AppContext context = new AppContext();
+            context.Database.EnsureCreated();
             InitializeComponent();
             DownloadDataJson();
         }
