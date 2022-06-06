@@ -36,7 +36,8 @@ namespace _13357_programowanie_obiektowe
 
 
     // TODO:
-    // 4. przetworzenie ich i dodawanie do bazy
+    // 4. przetworzenie danych
+    // 5. dodawanie do bazy
 
 
     /// <summary>
@@ -44,6 +45,10 @@ namespace _13357_programowanie_obiektowe
     /// </summary>
     public partial class MainWindow : Window
     {
+        class TableStations
+        {
+            public List<TableParams> tableParameters { get; set; }
+        }
         class TableParams
         {
             [JsonPropertyName("id")]
@@ -55,6 +60,8 @@ namespace _13357_programowanie_obiektowe
         }
 
         record Param(string Name, string Formula, string Code, int IdParam);
+        int[] stationIds = new int[] { 659, 459, 736, 10121, 9179};
+
 
         record JsonParam
         {
@@ -74,8 +81,17 @@ namespace _13357_programowanie_obiektowe
         {
             WebClient client = new WebClient();
             client.Headers.Add("Accept", "application/json");
-            string json = client.DownloadString("https://api.gios.gov.pl/pjp-api/rest/station/sensors/659");
-            List<TableParams> tableParams = JsonSerializer.Deserialize<List<TableParams>>(json);
+
+            List<TableStations> tableStations = new List<TableStations>();
+            for (int i = 0; i < stationIds.Length; i++)
+            {
+                string adress = "https://api.gios.gov.pl/pjp-api/rest/station/sensors/" + stationIds[i] + "";
+                string json = client.DownloadString(adress);
+                List<TableParams> tableParams = JsonSerializer.Deserialize<List<TableParams>>(json);
+                TableStations tableStation = new TableStations();
+                tableStation.tableParameters = tableParams;
+                tableStations.Add(tableStation);
+            }
         }
 
 
