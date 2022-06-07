@@ -65,6 +65,8 @@ namespace _13357_programowanie_obiektowe
     /// </summary>
     public partial class MainWindow : Window
     {
+        AppContext PublicContext;
+
         public record ModelSensor
         {
             public int SensorId { get; set; }
@@ -91,7 +93,7 @@ namespace _13357_programowanie_obiektowe
             public JsonParam Param { get; set; }
         }
 
-        int[] stationIds = new int[5] { 659, 459, 736, 10121, 9179};
+        int[] stationIds = new int[10] { 117, 266, 285, 459, 530, 736, 944, 10058, 10121, 10125 };
 
 
         record JsonParam
@@ -131,7 +133,7 @@ namespace _13357_programowanie_obiektowe
             WebClient client = new WebClient();
             client.Headers.Add("Accept", "application/json");
             List<TableParams> tableParams = new List<TableParams>();
-            List < TableDetails> tableDetails = new List<TableDetails>();
+            List<TableDetails> tableDetails = new List<TableDetails>();
             int index = 0;
             int indexDetail = 0;
             for (int i = 0; i < stationIds.Length; i++)
@@ -169,7 +171,65 @@ namespace _13357_programowanie_obiektowe
             context.SaveChanges();
         }
 
-        class AppContext : DbContext
+        private void GetStation(object sender, RoutedEventArgs e)
+        {
+
+            int realId = 0;
+            string stationIdInput = (string)StationInput.Text;
+            if (int.TryParse(stationIdInput, out int id))
+            {
+                switch (id)
+                {
+                    case 1:
+                        realId = 117;
+                        break;
+                    case 2:
+                        realId = 266;
+                        break;
+                    case 3:
+                        realId = 285;
+                        break;
+                    case 4:
+                        realId = 459;
+                        break;
+                    case 5:
+                        realId = 530;
+                        break;
+                    case 6:
+                        realId = 736;
+                        break;
+                    case 7:
+                        realId = 944;
+                        break;
+                    case 8:
+                        realId = 10058;
+                        break;
+                    case 9:
+                        realId = 10121;
+                        break;
+                    case 10:
+                        realId = 10125;
+                        break;
+                    default:
+                        realId = 0;
+                        break;
+                }
+
+                if (realId != 0)
+                {
+                    var sensors = from sensor in PublicContext.Sensors
+                                             where sensor.StationId == realId
+                                             select sensor.SensorId + " " + sensor.ParamName + " (" + sensor.ParamFormula + ")" + "< LineBreak />" ;
+
+
+                    SensorsList.Text = string.Join("\n", sensors);
+                }
+
+            }
+
+        }
+
+        public class AppContext : DbContext
         {
             public DbSet<ModelSensor> Sensors { get; set; }
             public DbSet<ModelDetail> Details { get; set; }
@@ -192,11 +252,17 @@ namespace _13357_programowanie_obiektowe
             }
         }
 
+        public void SetPublicContext(AppContext context)
+        {
+            PublicContext = context;
+        }
+
 
         public MainWindow()
         {
             AppContext context = new AppContext();
             context.Database.EnsureCreated();
+            SetPublicContext(context);
             InitializeComponent();
             DownloadDataJson(context);
         }
