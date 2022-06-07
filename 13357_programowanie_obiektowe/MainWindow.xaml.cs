@@ -233,7 +233,6 @@ namespace _13357_programowanie_obiektowe
                           where detail.DetailId == id
                           select detail.Value;
 
-                //ModelDetail details = PublicContext.Details.Where(x => x.SensorId == id).FirstOrDefault();
                 
                 ValueResult.Text = string.Join("\n", details);
             }
