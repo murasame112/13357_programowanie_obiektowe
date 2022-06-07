@@ -53,8 +53,8 @@ namespace _13357_programowanie_obiektowe
     */
 
     // TODO:
-    // 10. 4 punkt planu
     // 11. 5 punkt planu
+    // 12. naprawic blad, nie wiem czy tam sie w ogole pobiera do tej bazy to details
 
 
 
@@ -79,7 +79,7 @@ namespace _13357_programowanie_obiektowe
         {
             public int DetailId { get; set; }
             public int SensorId { get; set; }
-            public decimal Value { get; set; }
+            public decimal? Value { get; set; }
         }
 
         class TableParams
@@ -113,7 +113,7 @@ namespace _13357_programowanie_obiektowe
             [JsonPropertyName("key")]
             public string Key { get; set; }
             [JsonPropertyName("values")]
-            public JsonValue Values { get; set; }
+            public JsonValue[] Values { get; set; }
         }
 
         class JsonValue
@@ -121,7 +121,7 @@ namespace _13357_programowanie_obiektowe
             [JsonPropertyName("date")]
             public string Date { get; set; }
             [JsonPropertyName("value")]
-            public decimal Value { get; set; }
+            public decimal? Value { get; set; }
         }
 
         private void DownloadDataJson(AppContext context)
@@ -130,7 +130,7 @@ namespace _13357_programowanie_obiektowe
             WebClient client = new WebClient();
             client.Headers.Add("Accept", "application/json");
             List<TableParams> tableParams = new List<TableParams>();
-            //List<TableDetails> tableDetails = new List<TableDetails>();
+            TableDetails tableDetails = new TableDetails();
             List<JsonValue> jsonValues = new List<JsonValue>();
             int index = 0;
             int indexDetail = 0;
@@ -153,14 +153,16 @@ namespace _13357_programowanie_obiektowe
                     ModelSensor sensor = new ModelSensor() { SensorId = index, ParamId = localParamId, StationId = stationIds[i], ParamName = localParamName, ParamFormula = localParamFormula };
                     context.Sensors.Add(sensor);
 
-
                     string detailAdress = "https://api.gios.gov.pl/pjp-api/rest/data/getData/" + localParamId + "";
                     string detailJson = client.DownloadString(detailAdress);
-                    jsonValues = JsonSerializer.Deserialize<List<JsonValue>>(json);
+                    tableDetails = JsonSerializer.Deserialize<TableDetails>(detailJson);
 
-                    ModelDetail detail = new ModelDetail() { DetailId = indexDetail, SensorId = localParamId, Value = jsonValues[0].Value };
+                    decimal? val = tableDetails.Values[0].Value;
+
+
+                    ModelDetail detail = new ModelDetail() { DetailId = indexDetail, SensorId = localParamId, Value = val };
                     context.Details.Add(detail);
-                    jsonValues.Clear();
+                    
 
                 }
             }
@@ -219,8 +221,8 @@ namespace _13357_programowanie_obiektowe
                                   where sensor.StationId == realId
                                   select sensor.SensorId + " " + sensor.ParamName + " (" + sensor.ParamFormula + ")";
 
-
-                    SensorsList.Text = string.Join("\n", sensors);
+                    SensorsList.Text = "Wybrane sensory na poszczególnej stacji: \n";
+                    SensorsList.Text += string.Join("\n", sensors);
                 }
 
             }
@@ -228,6 +230,19 @@ namespace _13357_programowanie_obiektowe
         }
         private void GetSensor(object sender, RoutedEventArgs e)
         {
+
+            string sensorIdInput = (string)SensorInput.Text;
+            if (int.TryParse(sensorIdInput, out int id))
+            {
+                /*var details = from detail in PublicContext.Details
+                          where detail.SensorId == id
+                          select detail;*/
+
+                ModelDetail details = PublicContext.Details.Where(x => x.SensorId == id).FirstOrDefault();
+
+                ValueResult.Text = details.Value.ToString();
+            }
+
 
         }
 
