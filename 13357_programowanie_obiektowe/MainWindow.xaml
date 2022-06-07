@@ -22,25 +22,25 @@
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <TextBox x:Name="StationInput"
+        <TextBox Name="StationInput"
             Margin="10,10,35,72"
-            FontSize="48"
+            FontSize="35"
             TextAlignment="Center"
             Grid.Column="1"
             >
             0
         </TextBox>
-        <TextBox x:Name="SensorInput"
+        <TextBox Name="SensorInput"
             Grid.Row="1"
             Grid.Column="1"
             Margin="10,10,35,72"
-            FontSize="48"
+            FontSize="35"
             TextAlignment="Center"
             >
             0
         </TextBox>
         <Button
-            x:Name="LoadFileButton"
+            Name="GetStationButton"
             Grid.Column="2"
             FontSize="20"
             Margin="35,10,10,72" Click="GetStation"
@@ -48,7 +48,7 @@
             Ok
         </Button>
         <Button
-            x:Name="SaveFileButton"
+            Name="GetSensorButton"
             Grid.Column="2"
             Grid.Row="1"
             Margin="35,10,10,72"

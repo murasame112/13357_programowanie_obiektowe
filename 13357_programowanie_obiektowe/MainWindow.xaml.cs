@@ -115,8 +115,6 @@ namespace _13357_programowanie_obiektowe
             public string Key { get; set; }
             [JsonPropertyName("values")]
             public JsonValue Values { get; set; }
-            [JsonPropertyName("param")]
-            public JsonParam Param { get; set; }
         }
 
         class JsonValue
@@ -133,7 +131,8 @@ namespace _13357_programowanie_obiektowe
             WebClient client = new WebClient();
             client.Headers.Add("Accept", "application/json");
             List<TableParams> tableParams = new List<TableParams>();
-            List<TableDetails> tableDetails = new List<TableDetails>();
+            //List<TableDetails> tableDetails = new List<TableDetails>();
+            List<JsonValue> jsonValues = new List<JsonValue>();
             int index = 0;
             int indexDetail = 0;
             for (int i = 0; i < stationIds.Length; i++)
@@ -158,11 +157,11 @@ namespace _13357_programowanie_obiektowe
 
                     string detailAdress = "https://api.gios.gov.pl/pjp-api/rest/data/getData/" + localParamId + "";
                     string detailJson = client.DownloadString(detailAdress);
-                    tableDetails = JsonSerializer.Deserialize<List<TableDetails>>(json);
+                    jsonValues = JsonSerializer.Deserialize<List<JsonValue>>(json);
 
-                    ModelDetail detail = new ModelDetail() { DetailId = indexDetail, SensorId = localParamId, Value = tableDetails[0].Values.Value };
+                    ModelDetail detail = new ModelDetail() { DetailId = indexDetail, SensorId = localParamId, Value = jsonValues[0].Value };
                     context.Details.Add(detail);
-                    tableDetails.Clear();
+                    jsonValues.Clear();
 
                 }
             }
@@ -218,14 +217,18 @@ namespace _13357_programowanie_obiektowe
                 if (realId != 0)
                 {
                     var sensors = from sensor in PublicContext.Sensors
-                                             where sensor.StationId == realId
-                                             select sensor.SensorId + " " + sensor.ParamName + " (" + sensor.ParamFormula + ")" + "< LineBreak />" ;
+                                  where sensor.StationId == realId
+                                  select sensor.SensorId + " " + sensor.ParamName + " (" + sensor.ParamFormula + ")";
 
 
                     SensorsList.Text = string.Join("\n", sensors);
                 }
 
             }
+
+        }
+        private void GetSensor(object sender, RoutedEventArgs e)
+        {
 
         }
 
