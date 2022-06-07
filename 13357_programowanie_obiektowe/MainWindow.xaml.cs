@@ -37,11 +37,27 @@ namespace _13357_programowanie_obiektowe
      */
 
 
+    /*
+    stacje i ich id:
+    [id w api] - [nazwa] - [id dla uzytkownika] 
+    117 - wrocław - 1
+    266 - lublin - 2
+    285 - zamość - 3
+    459 - zakopane - 4
+    530 - warszawa - 5
+    736 - gdańsk - 6
+    944 - poznań - 7
+    10058 - łódź - 8
+    10121 - kraków - 9
+    10125 - rzeszów - 10
+    */
 
     // TODO:
     // 7. interfejs uzytkownika
     // 8. wysylanie zapytan do bazy i otrzymywanie odpowiedzi
     // 9. wyswietlanie odpowiedzi
+
+
 
 
     /// <summary>
@@ -184,5 +200,6 @@ namespace _13357_programowanie_obiektowe
             InitializeComponent();
             DownloadDataJson(context);
         }
+
     }
 }
