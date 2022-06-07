@@ -53,8 +53,7 @@ namespace _13357_programowanie_obiektowe
     */
 
     // TODO:
-    // 11. 5 punkt planu
-    // 12. naprawic blad, nie wiem czy tam sie w ogole pobiera do tej bazy to details
+    // 13. baza blad
 
 
 
@@ -157,13 +156,13 @@ namespace _13357_programowanie_obiektowe
                     string detailJson = client.DownloadString(detailAdress);
                     tableDetails = JsonSerializer.Deserialize<TableDetails>(detailJson);
 
-                    decimal? val = tableDetails.Values[0].Value;
+                    decimal? val = tableDetails.Values[1].Value;
 
 
                     ModelDetail detail = new ModelDetail() { DetailId = indexDetail, SensorId = localParamId, Value = val };
                     context.Details.Add(detail);
-                    
 
+                    
                 }
             }
 
@@ -234,13 +233,13 @@ namespace _13357_programowanie_obiektowe
             string sensorIdInput = (string)SensorInput.Text;
             if (int.TryParse(sensorIdInput, out int id))
             {
-                /*var details = from detail in PublicContext.Details
-                          where detail.SensorId == id
-                          select detail;*/
+                var details = from detail in PublicContext.Details
+                          where detail.DetailId == id
+                          select detail.Value;
 
-                ModelDetail details = PublicContext.Details.Where(x => x.SensorId == id).FirstOrDefault();
-
-                ValueResult.Text = details.Value.ToString();
+                //ModelDetail details = PublicContext.Details.Where(x => x.SensorId == id).FirstOrDefault();
+                
+                ValueResult.Text = string.Join("\n", details);
             }
 
 
@@ -281,7 +280,7 @@ namespace _13357_programowanie_obiektowe
             context.Database.EnsureCreated();
             SetPublicContext(context);
             InitializeComponent();
-            DownloadDataJson(context);
+            DownloadDataJson(PublicContext);
         }
 
     }
