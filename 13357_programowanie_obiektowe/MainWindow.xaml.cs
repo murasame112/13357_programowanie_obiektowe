@@ -53,9 +53,8 @@ namespace _13357_programowanie_obiektowe
     */
 
     // TODO:
-    // 7. interfejs uzytkownika
-    // 8. wysylanie zapytan do bazy i otrzymywanie odpowiedzi
-    // 9. wyswietlanie odpowiedzi
+    // 10. 4 punkt planu
+    // 11. 5 punkt planu
 
 
 
