@@ -32,8 +32,7 @@ namespace _13357_programowanie_obiektowe
      * 3 - program wyswietla mu id rzeczy ktore stacja mierzy (na podstawie stanowiska pomiarowego)
      * 4 - uzytkownik podaje id sensora
      * 5 - program wyswietla stan poszczegolnego skladnika powietrza (dane pomiarowe)
-     * ++++6 - zapisywanie do bazy albo tuż po pobraniu danych i wtedy wyświetla wszystko na podstawie danych z bazy
-     * 7 - na koniec może poszukać skali i np przeliczać, że np. wartość ozonu 77.1506 to Dobra, Bardzo Dobra, Zła, czy coś takiego?
+     * 6 - zapisywanie do bazy albo tuż po pobraniu danych i wtedy wyświetla wszystko na podstawie danych z bazy
      */
 
 
@@ -53,10 +52,7 @@ namespace _13357_programowanie_obiektowe
     */
 
     // TODO:
-    // 13. baza blad
-
-
-
+    // 14.
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -123,7 +119,7 @@ namespace _13357_programowanie_obiektowe
             public decimal? Value { get; set; }
         }
 
-        private void DownloadDataJson(AppContext context)
+        public void DownloadDataJson(AppContext context)
         {
 
             WebClient client = new WebClient();
@@ -258,6 +254,7 @@ namespace _13357_programowanie_obiektowe
 
             protected override void OnModelCreating(ModelBuilder modelBuilder)
             {
+                
                 modelBuilder.Entity<ModelSensor>()
                 .ToTable("Sensors")
                 .HasKey(s => s.SensorId);
@@ -277,10 +274,22 @@ namespace _13357_programowanie_obiektowe
         public MainWindow()
         {
             AppContext context = new AppContext();
-            context.Database.EnsureCreated();
             SetPublicContext(context);
+            if (context.Database.EnsureCreated())
+            {
+                context.Database.EnsureCreated();
+                DownloadDataJson(PublicContext);
+            }
+            else
+            {
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+                DownloadDataJson(PublicContext);
+            }
+            
             InitializeComponent();
-            DownloadDataJson(PublicContext);
+           
+
         }
 
     }
